@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+	<style>
+	#app, .table{
+		margin-top: 60px;
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+	  <div id="app">
+	    <router-view></router-view>
+	  </div>
+	</div>
+
+	<template id="proxy-list">
+	  <div>
+	    <div class="actions">
+				<div id="btnCreate" @click.capture='isDisabled'>
+					<router-link  class="btn btn-success" :class="{disabled : disabled}" :to="{path: '/proxy-create'}">Добавить proxy</router-link>
+				</div>
+	    </div>
+			<div class="status">
+				<p>Всего proxy: {{proxyCurrent}} из {{proxyMax}}</p>
+				<h3 v-if="proxyCurrent == proxyMax">Больше нельзя добавить </h3>
+				<h3 v-if="proxyCurrent == 0"> Здесь ничего нет, добавьте proxy</h3>
+			</div>
+	    <table class="table">
+	      <thead>
+	      <tr>
+	        <th>Host</th>
+	        <th>Port</th>
+	        <th>Login</th>
+	        <th>Password</th>
+					<th>Действие</th>
+	      </tr>
+	      </thead>
+	      <tbody>
+	      <tr v-for="proxy in proxys">
+	        <td>
+	          {{ proxy.host }}
+	        </td>
+	        <td>{{ proxy.port }}</td>
+	        <td>
+	          {{ proxy.login }}
+	        </td>
+					<td>{{proxy.password}}</td>
+	        <td>
+	          <router-link class="btn btn-primary" :to="{name: 'proxy-edit', params: {proxy_id: proxy.id}}">Изменить</router-link>
+	          <router-link class="btn btn-danger" :to="{name: 'proxy-delete', params: {proxy_id: proxy.id}}">Удалить</router-link>
+	        </td>
+	      </tr>
+	      </tbody>
+	    </table>
+	  </div>
+	</template>
+
+	<template id="proxy-create">
+	  <div>
+	    <h2>Добавить proxy</h2>
+	    <form @submit="createProxy">
+	      <div class="form-group">
+	        <label>Host</label>
+	        <input type="text" class="form-control" id="add-host" v-model="proxy.host" required>
+	      </div>
+	      <div class="form-group">
+	        <label>Port</label>
+	        <input type="text" class="form-control" id="add-port" v-model="proxy.port" required></input>
+	      </div>
+	      <div class="form-group">
+	        <label>Login</label>
+	        <input type="text" class="form-control" id="add-login" v-model="proxy.login">
+	      </div>
+				<div class="form-group">
+					<label>Password</label>
+					<input  type="text" class="form-control" id="add-password" v-model="proxy.password">
+				</div>
+	      <button type="submit" class="btn btn-primary">Добавить</button>
+	      <router-link class="btn btn-link" :to="'/'">Отмена</router-link>
+	    </form>
+	  </div>
+	</template>
+
+	<template id="proxy-edit">
+	  <div>
+	    <h2>Изменить данные</h2>
+	    <form @submit="updateProxy">
+	      <div class="form-group">
+	        <label>Host</label>
+	        <input type="text" class="form-control" id="edit-host" v-model="proxy.host" required/>
+	      </div>
+	      <div class="form-group">
+	        <label>Port</label>
+	        <input  type="text" class="form-control" id="edit-port" v-model="proxy.port" required></input>
+	      </div>
+	      <div class="form-group">
+	        <label>Login </label>
+	        <input type="text" class="form-control" id="edit-login" v-model="proxy.login"/>
+	      </div>
+				<div class="form-group">
+					<label>Password </label>
+					<input type="text" class="form-control" id="edit-password" v-model="proxy.password"/>
+				</div>
+	      <button type="submit" class="btn btn-primary">Сохранить измененеия</button>
+	      <router-link class="btn btn-default" :to="'/'">Отмена</router-link>
+	    </form>
+	  </div>
+	</template>
+
+	<template id="proxy-delete">
+	  <div>
+	    <h2>Вы точно хотите удалить этот proxy?</h2>
+			<table class="table">
+	      <thead>
+	      <tr>
+	        <th>Host</th>
+	        <th>Port</th>
+	        <th>Login</th>
+	        <th>Password</th>
+	      </tr>
+	      </thead>
+	      <tbody>
+	      <tr>
+	        <td>
+	          {{ proxy.host }}
+	        </td>
+	        <td>{{ proxy.port }}</td>
+	        <td>
+	          {{ proxy.login }}
+	        </td>
+					<td>{{proxy.password}}</td>
+	      </tr>
+	      </tbody>
+	    </table>
+	    <form @submit="deleteProxy">
+	      <button type="submit" class="btn btn-danger">Удалить</button>
+	      <router-link class="btn btn-default" :to="'/'">Отмена</router-link>
+	    </form>
+	  </div>
+	</template>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script src="js.js"></script>
+</body>
+</html>
